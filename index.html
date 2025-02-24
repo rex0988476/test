@@ -25,6 +25,7 @@
                     let sheet = workbook.Sheets[sheetName];
 
                     let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // 轉成 JSON
+                    jsonData = fillMergedCells(sheet, jsonData); // 修正合併儲存格問題
                     displayExcelData(jsonData);
                 })
                 .catch(error => console.error("讀取 Excel 失敗", error));
@@ -43,6 +44,26 @@
                 });
                 table.appendChild(tr);
             });
+        }
+
+        // 🔹 處理合併儲存格
+        function fillMergedCells(sheet, jsonData) {
+            if (!sheet["!merges"]) return jsonData; // 如果沒有合併儲存格，直接回傳
+        
+            sheet["!merges"].forEach(merge => {
+                let { s, e } = merge; // s = start, e = end
+                let value = jsonData[s.r][s.c]; // 取得合併儲存格的值
+
+                // 填補合併範圍內的儲存格
+                for (let row = s.r; row <= e.r; row++) {
+                    for (let col = s.c; col <= e.c; col++) {
+                        if (row !== s.r || col !== s.c) { // 跳過原始儲存格
+                            jsonData[row][col] = value;
+                        }
+                    }
+                }
+            });
+            return jsonData;
         }
     </script>
 </body>
