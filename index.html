@@ -7,11 +7,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-    <h2>從 GitHub 倉庫讀取 Excel</h2>
-    <button onclick="fetchExcel()">讀取 Excel</button>
     <table id="excelTable" border="1"></table>
-
+    
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        fetchExcel(); // 當頁面 DOM 載入後，自動讀取 Excel
+        });
         function fetchExcel() {
             let url = "https://raw.githubusercontent.com/rex0988476/test/main/data.xlsx";
             //let url = "data.xlsx";
