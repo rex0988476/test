@@ -24,13 +24,54 @@
                     let sheetName = workbook.SheetNames[0]; // 取得第一個工作表
                     let sheet = workbook.Sheets[sheetName];
 
-                    let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // 轉成 JSON
-                    jsonData = fillMergedCells(sheet, jsonData); // 修正合併儲存格問題
-                    displayExcelData(jsonData);
+                    let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" }); // 轉成 JSON
+                    //jsonData = fillMergedCells(sheet, jsonData); // 修正合併儲存格問題
+                    displayExcelData(sheet, jsonData);
                 })
                 .catch(error => console.error("讀取 Excel 失敗", error));
         }
+        function displayExcelData(sheet, jsonData) {
+            let table = document.getElementById("excelTable");
+            table.innerHTML = ""; // 清空表格
 
+            let merges = sheet["!merges"] || []; // 取得合併儲存格資訊
+            let mergedMap = {}; // 用來記錄哪些儲存格是合併的
+
+            // 標記合併儲存格
+            merges.forEach(({ s, e }) => {
+                for (let row = s.r; row <= e.r; row++) {
+                    for (let col = s.c; col <= e.c; col++) {
+                        mergedMap[`${row}-${col}`] = { rowspan: e.r - s.r + 1, colspan: e.c - s.c + 1, main: row === s.r && col === s.c };
+                    }
+                }
+            });
+
+            // 建立表格
+            jsonData.forEach((row, rowIndex) => {
+                let tr = document.createElement("tr");
+
+                row.forEach((cell, colIndex) => {
+                    // 如果是合併區域的次要格子，則跳過不建立 `<td>`
+                    if (mergedMap[`${rowIndex}-${colIndex}`] && !mergedMap[`${rowIndex}-${colIndex}`].main) return;
+
+                    let td = document.createElement("td");
+                    td.textContent = cell;
+
+                    // 設定 rowspan & colspan（如果該格是合併區域的主要格）
+                    if (mergedMap[`${rowIndex}-${colIndex}`]) {
+                        let { rowspan, colspan } = mergedMap[`${rowIndex}-${colIndex}`];
+                        if (rowspan > 1) td.setAttribute("rowspan", rowspan);
+                        if (colspan > 1) td.setAttribute("colspan", colspan);
+                    }
+
+                    tr.appendChild(td);
+                });
+        
+                table.appendChild(tr);
+            });
+        }
+
+        /*
         function displayExcelData(data) {
             let table = document.getElementById("excelTable");
             table.innerHTML = ""; // 清空表格
@@ -45,7 +86,7 @@
                 table.appendChild(tr);
             });
         }
-
+        */
         // 🔹 處理合併儲存格
         function fillMergedCells(sheet, jsonData) {
             if (!sheet["!merges"]) return jsonData; // 如果沒有合併儲存格，直接回傳
