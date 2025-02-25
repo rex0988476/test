@@ -1,0 +1,79 @@
+//單個作品區塊（可複製多個）
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<div class=\"anime-item\">");
+        //左側作品封面（可點擊）
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<div class=\"cover\" onclick=\"toggleAnimeInfo("+i.toString()+")\">");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<img src=\""+animes[i].img_link+"\" alt=\"作品"+(i+1).toString()+"封面\">");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</div>");
+        //右側動畫資訊表格（初始隱藏）
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<div class=\"anime-info\">");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<table class=\"anime-table\">");
+        //動畫名稱
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<tr class=\"title-row\">");//title-row沒做事
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<td colspan=\""+animes[i].title_row_colspan.toString()+"\" class=\"anime-name\">"+animes[i].name+"</td>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</tr>");
+        //第x季
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<tr class=\"header\">");//header沒做事
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<th></th>");
+        //迴圈
+        j=0;
+        while(j<animes[i].info.length){
+            document.getElementById("id_container").insertAdjacentHTML("beforeend","<th>"+seasons_name[j]+"</th>");
+            j++;
+        }
+        //迴圈end
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<th class=\"fixed-width\">總評分</th>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</tr>");
+        //年份
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<tr>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>年份</td>");
+        //迴圈
+        j=0;
+        while(j<animes[i].info.length){
+            document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>"+animes[i].info[j].year.toString()+"</td>");
+            j++;
+        }
+        //迴圈end
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<td class=\"fixed-width\" rowspan=\"4\">"+animes[i].total_score.toString()+"/10</td>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</tr>");
+        //看過的集數 / 總集數
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<tr>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>看過的集數 / 總集數</td>");
+        //迴圈
+        j=0;
+        while(j<animes[i].info.length){
+            document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>"+animes[i].info[j].watched.toString()+" / "+animes[i].info[j].total.toString()+"</td>");
+            j++;
+        }
+        //迴圈end
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</tr>");
+        //播放日期
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<tr>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>播放日期</td>");
+        //迴圈
+        j=0;
+        while(j<animes[i].info.length){
+            document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>"+animes[i].info[j].date_start+" - "+animes[i].info[j].date_end+"</td>");
+            j++;
+        }
+        //迴圈end
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</tr>");
+        //評分
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<tr>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>評分</td>");
+        //迴圈
+        j=0;
+        while(j<animes[i].info.length){
+            document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>"+animes[i].info[j].score.toString()+" / 10</td>");
+            j++;
+        }
+        //迴圈end
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</tr>");
+        //類型
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<tr>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<td>類型</td>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","<td colspan=\""+animes[i].type_row_colspan.toString()+"\">"+animes[i].types+"</td>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</tr>");
+
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</table>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</div>");
+        document.getElementById("id_container").insertAdjacentHTML("beforeend","</div>");

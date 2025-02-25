@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>動畫作品展示</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="id_container" class="container">
+        <!-- 單個作品區塊（可複製多個） -->
+        <div class="anime-item">
+            <!-- 左側作品封面（可點擊） -->
+            <div class="cover" onclick="toggleAnimeInfo(0)">
+                <img src="violet.png" alt="作品1封面">
+            </div>
+
+            <!-- 右側動畫資訊表格（初始隱藏） -->
+            <div class="anime-info">
+                <table class="anime-table">
+                    <tr class="title-row">
+                        <td colspan="3" class="anime-name">紫羅蘭永恆花園</td>
+                    </tr>
+                    <tr class="header">
+                        <th></th>
+                        <th>第一季</th>
+                        <th class="fixed-width">總評分</th>
+                    </tr>
+                    <tr>
+                        <td>年份</td>
+                        <td>2018</td>
+                        <td class="fixed-width" rowspan="4">10/10</td>
+                    </tr>
+                    <tr>
+                        <td>看過的集數 / 總集數</td>
+                        <td>13+1 / 13+1</td>
+                    </tr>
+                    <tr>
+                        <td>播放日期</td>
+                        <td>1/10 - 4/4</td>
+                    </tr>
+                    <tr>
+                        <td>評分</td>
+                        <td>10 / 10</td>
+                    </tr>
+                    <tr>
+                        <td>類型</td>
+                        <td colspan="2">療癒, 溫馨, 反戰, 勵志, 愛情</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+<!-- 單個作品區塊（可複製多個） -->
+<div class="anime-item">
+    <!-- 左側作品封面（可點擊） -->
+    <div class="cover" onclick="toggleAnimeInfo(1)">
+        <img src="kei.jpg" alt="作品2封面">
+    </div>
+
+    <!-- 右側動畫資訊表格（初始隱藏） -->
+    <div class="anime-info">
+        <table class="anime-table">
+            <tr class="title-row">
+                <td colspan="6" class="anime-name">鬼滅之刃</td>
+            </tr>
+            <tr class="header">
+                <th></th>
+                <th>第一季</th>
+                <th>第二季</th>
+                <th>第三季</th>
+                <th>第四季</th>
+
+                <th class="fixed-width">總評分</th>
+            </tr>
+            <tr>
+                <td>年份</td>
+                <td>2019</td>
+                <td>2021</td>
+                <td>2023</td>
+                <td>2024</td>
+
+                <td class="fixed-width" rowspan="4">8/10</td>
+            </tr>
+            <tr>
+                <td>看過的集數 / 總集數</td>
+                <td>26 / 26</td>
+                <td>11 / 11</td>
+                <td>0 / 11</td>
+                <td>0 / 8</td>
+
+            </tr>
+            <tr>
+                <td>播放日期</td>
+                <td>4/6 - 9/28</td>
+                <td>12/5 - 2/13</td>
+                <td>4/9 - 6/18</td>
+                <td>5/12 - 6/30</td>
+            </tr>
+            <tr>
+                <td>評分</td>
+                <td>8 / 10</td>
+                <td>8 / 10</td>
+                <td> - </td>
+                <td> - </td>
+            </tr>
+            <tr>
+                <td>類型</td>
+                <td colspan="5">少年漫畫, 黑暗奇幻, 時代劇, 獵奇, 冒險, 戰鬥</td>
+            </tr>
+        </table>
+    </div>
+</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

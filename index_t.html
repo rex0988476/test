@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.1/package/dist/xlsx.full.min.js"></script>
+    <script>
+        // 从文件数据中解析出excel内容
+        function parse(data) {
+            const workbook = XLSX.read(data); // 从原始数据获取工作簿
+                                              // 后端使用可以使用 readFile() 方法直接读取文件
+
+            var first_sheet_name = workbook.SheetNames[0]; // 获得第一个工作表名称
+
+            const worksheet = workbook.Sheets[first_sheet_name]; // 获取工作表
+
+            console.log(worksheet['A1']); // 读取并打印A1端元格数据
+
+            console.log(worksheet['!merges']); // 打印所有合并单元格信息数组
+            
+            console.log(worksheet['!ref']); // 打印输出当前工作表使用的范围
+        }
+
+        // 读取文件数据
+        function read(file) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                parse(e.target.result);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</head>
+
+<body>
+    
+</body>
+
+</html>
