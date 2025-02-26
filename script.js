@@ -22,15 +22,114 @@ class Anime{
         this.info.push({year: year, watched: watched, total: total, date_start: date_start, date_end: date_end, score: score});
     }
 }
+var ANIMES = [];
 
-document.addEventListener("DOMContentLoaded", function() {
-        fetchExcel(); // 當頁面 DOM 載入後，自動讀取 Excel
+document.addEventListener("DOMContentLoaded", function () {
+    const sortButtons = document.querySelectorAll(".sort-btn");
+    const orderButtons = document.querySelectorAll(".order-btn");
+    
+    // 設定預設按鈕 (Sort Default & Order Ascending)
+    document.querySelector(".sort-btn[data-sort='default']").classList.add("active");
+    document.querySelector(".order-btn[data-order='ascending']").classList.add("active");
+
+    // 讓 Sort 類別的按鈕，確保只有一個是 active
+    sortButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            sortButtons.forEach(btn => btn.classList.remove("active")); // 移除所有 active
+            this.classList.add("active"); // 設定當前按鈕為 active
+        });
     });
 
+    // 讓 Order 類別的按鈕，確保只有一個是 active
+    orderButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            orderButtons.forEach(btn => btn.classList.remove("active")); // 移除所有 active
+            this.classList.add("active"); // 設定當前按鈕為 active
+        });
+    });
+});
+
+
+// 升降序
+document.querySelectorAll(".order-btn").forEach(button => {
+    button.addEventListener("click", function () {
+        const orderType = this.getAttribute("data-order");
+        const container = document.getElementById("id_container");
+        container.innerHTML = ""; // 清空容器
+        let sortedData = [...ANIMES]; // 複製數據，避免修改原始數據
+        // **取得當前 Sort 的按鈕**
+        const activeSortBtn = document.querySelector(".sort-btn.active");
+        const activeSortType = activeSortBtn ? activeSortBtn.getAttribute("data-sort") : "default";
+        if (orderType === "ascending") {
+            if (activeSortType === "totalRate") {
+                sortedData.sort((a, b) => a.total_score - b.total_score);
+            } else if (activeSortType === "firstYear") {
+                sortedData.sort((a, b) => a.info[0].year - b.info[0].year);
+            } else if (activeSortType === "lastYear") {
+                sortedData.sort((a, b) => a.info[a.info.length-1].year - b.info[b.info.length-1].year);
+            } else {
+                sortedData = ANIMES; // 預設順序
+            }
+        } else if (orderType === "descending") {
+            if (activeSortType === "totalRate") {
+                sortedData.sort((a, b) => b.total_score - a.total_score);
+            } else if (activeSortType === "firstYear") {
+                sortedData.sort((a, b) => b.info[0].year - a.info[0].year);
+            } else if (activeSortType === "lastYear") {
+                sortedData.sort((a, b) => b.info[b.info.length-1].year - a.info[a.info.length-1].year);
+            } else {
+                sortedData = [...ANIMES].reverse(); // 預設順序
+            }
+        }
+        printAnimes(sortedData);
+    });
+});
+
+// 按鈕排序功能
+document.querySelectorAll(".sort-btn").forEach(button => {
+    button.addEventListener("click", function () {
+        const sortType = this.getAttribute("data-sort");
+        const container = document.getElementById("id_container");
+        container.innerHTML = ""; // 清空容器
+        let sortedData = [...ANIMES]; // 複製數據，避免修改原始數據
+        // **取得當前 Order 的按鈕**
+        const activeOrderBtn = document.querySelector(".order-btn.active");
+        const activeOrderType = activeOrderBtn ? activeOrderBtn.getAttribute("data-order") : "acending";
+        if (activeOrderType === "ascending") {
+            if (sortType === "totalRate") {
+                sortedData.sort((a, b) => a.total_score - b.total_score);
+            } else if (sortType === "firstYear") {
+                sortedData.sort((a, b) => a.info[0].year - b.info[0].year);
+            } else if (sortType === "lastYear") {
+                sortedData.sort((a, b) => a.info[a.info.length-1].year - b.info[b.info.length-1].year);
+            } else {
+                sortedData = ANIMES; // 預設順序
+            }
+        }
+        else if (activeOrderType === "descending") {
+            if (sortType === "totalRate") {
+                sortedData.sort((a, b) => b.total_score - a.total_score);
+            } else if (sortType === "firstYear") {
+                sortedData.sort((a, b) => b.info[0].year - a.info[0].year);
+            } else if (sortType === "lastYear") {
+                sortedData.sort((a, b) => b.info[b.info.length-1].year - a.info[a.info.length-1].year);
+            } else {
+                sortedData = [...ANIMES].reverse(); // 預設順序
+            }
+        }
+        
+        printAnimes(sortedData);
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    fetchExcel(); // 當頁面 DOM 載入後，自動讀取 Excel
+});
+
 function fetchExcel() {
-    var url = "https://raw.githubusercontent.com/rex0988476/test/main/data.xlsx";
+    //var url = "https://raw.githubusercontent.com/rex0988476/test/main/data.xlsx";
     //var url = "data.xlsx";
-    //var url = "http://localhost:8000/data.xlsx";
+    var url = "http://localhost:8000/data.xlsx";
 
     fetch(url)
     //fetch(url)
@@ -64,9 +163,7 @@ function fetchExcel() {
             N row: types, start at N8, godown, interval=6, end at the first empty cell
             */
             var sheetName = workbook.SheetNames[0]; // 取得第一個工作表名稱
-            var sheet_anime_info = workbook.Sheets[sheetName];// 取得第一個工作表
-            
-            var animes = [];
+            var sheet_anime_info = workbook.Sheets[sheetName];// 取得第一個工作表    
             
             var anime_interval = 6;
             var sheet_anime_info_start_row = 8;
@@ -97,7 +194,7 @@ function fetchExcel() {
                 img_link = anime_img_link_root + img_names[j];
                 total_score = sheet_anime_info["M"+i.toString()].v;
                 types = sheet_anime_info["N"+i.toString()].v.toString();
-                animes.push(new Anime(id, name_, img_link, total_score, types));
+                ANIMES.push(new Anime(id, name_, img_link, total_score, types));
                 k=0;
                 seasons_char = sheet_anime_info_seasons_start_char;
                 while(sheet_anime_info[seasons_char+i.toString()] && sheet_anime_info[seasons_char+i.toString()].v && sheet_anime_info[seasons_char+i.toString()].v.toString().trim() !== ""){//單元格不為 undefined、空白或純空格
@@ -112,30 +209,39 @@ function fetchExcel() {
                     else{
                         score = sheet_anime_info[seasons_char+(i+5).toString()].v;
                     }
-                    animes[animes.length-1].addInfo(year, watched, total, date_start, date_end, score);
+                    ANIMES[ANIMES.length-1].addInfo(year, watched, total, date_start, date_end, score);
                     k++;
                     seasons_char = String.fromCharCode(sheet_anime_info_seasons_start_char.charCodeAt(0) + k);
                 }
-                title_row_colspan=animes[animes.length-1].info.length+2;//this.info.length+2;
-                type_row_colspan=animes[animes.length-1].info.length+1;//this.info.length+1;
-                animes[animes.length-1].title_row_colspan = title_row_colspan;
-                animes[animes.length-1].type_row_colspan = type_row_colspan;
+                title_row_colspan=ANIMES[ANIMES.length-1].info.length+2;//this.info.length+2;
+                type_row_colspan=ANIMES[ANIMES.length-1].info.length+1;//this.info.length+1;
+                ANIMES[ANIMES.length-1].title_row_colspan = title_row_colspan;
+                ANIMES[ANIMES.length-1].type_row_colspan = type_row_colspan;
                 i+=anime_interval;
                 j++;
             }
-            printAnimes(animes);
-            
-
-
-            //var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" }); // 轉成 JSON
-            //jsonData = fillMergedCells(sheet, jsonData); // 修正合併儲存格問題
-            //printAnimes(animes);
+            printAnimes(ANIMES);
         })
         .catch(error => console.error("讀取 Excel 失敗", error));
     }
 
 function printAnimes(animes) {
-    var seasons_name = ["第一季", "第二季", "第三季", "第四季", "第五季", "第六季", "第七季", "第八季", "第九季", "第十季"];
+    //var seasons_name = ["第一季", "第二季", "第三季", "第四季", "第五季", "第六季", "第七季", "第八季", "第九季", "第十季"];
+    var seasons_name = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10"];
+    /*var year_name = "年份";
+    var watched_total_name = "看過的集數 / 總集數";
+    var release_date_name = "播放日期";
+    var score_name = "評分";
+    var type_name = "類型";
+    var total_score_name = "總評分";
+    */
+    var year_name = "Year";
+    var watched_total_name = "Progress";
+    var release_date_name = "Release Date";
+    var score_name = "Rate";
+    var type_name = "Types";
+    var total_score_name = "Total Rate";
+
     var i=0;
     var j=0;
     var s_container_start="";
@@ -145,7 +251,7 @@ function printAnimes(animes) {
     
     while(i<animes.length){
         //單個作品區塊（可複製多個）
-        s_container_start = "<div class=\"anime-item\">";
+        s_container_start = "<div class=\"anime-item active\">";
         //左側作品封面（可點擊）
         s_cover = "<div class=\"cover\" onclick=\"toggleAnimeInfo("+i.toString()+")\">" + "<img src=\""+animes[i].img_link+"\" alt=\"作品"+(i+1).toString()+"封面\">" + "</div>";
         //右側動畫資訊表格（初始隱藏）
@@ -164,11 +270,11 @@ function printAnimes(animes) {
             j++;
         }
         //迴圈end
-        s_anime_info += "<th class=\"fixed-width\">總評分</th>";
+        s_anime_info += "<th class=\"fixed-width\">"+total_score_name+"</th>";
         s_anime_info += "</tr>";
         //年份
         s_anime_info += "<tr>";
-        s_anime_info += "<td>年份</td>";
+        s_anime_info += "<td>"+year_name+"</td>";
         //迴圈
         j=0;
         while(j<animes[i].info.length){
@@ -180,7 +286,7 @@ function printAnimes(animes) {
         s_anime_info += "</tr>";
         //看過的集數 / 總集數
         s_anime_info += "<tr>";
-        s_anime_info += "<td>看過的集數 / 總集數</td>";
+        s_anime_info += "<td>"+watched_total_name+"</td>";
         //迴圈
         j=0;
         while(j<animes[i].info.length){
@@ -191,7 +297,7 @@ function printAnimes(animes) {
         s_anime_info += "</tr>";
         //播放日期
         s_anime_info += "<tr>";
-        s_anime_info += "<td>播放日期</td>";
+        s_anime_info += "<td>"+release_date_name+"</td>";
         //迴圈
         j=0;
         while(j<animes[i].info.length){
@@ -202,7 +308,7 @@ function printAnimes(animes) {
         s_anime_info += "</tr>";
         //評分
         s_anime_info += "<tr>";
-        s_anime_info += "<td>評分</td>";
+        s_anime_info += "<td>"+score_name+"</td>";
         //迴圈
         j=0;
         while(j<animes[i].info.length){
@@ -218,7 +324,7 @@ function printAnimes(animes) {
         s_anime_info += "</tr>";
         //類型
         s_anime_info += "<tr>";
-        s_anime_info += "<td>類型</td>";
+        s_anime_info += "<td>"+type_name+"</td>";
         s_anime_info += "<td colspan=\""+animes[i].type_row_colspan.toString()+"\">"+animes[i].types+"</td>";
         s_anime_info += "</tr>";
         s_anime_info += "</table>";
